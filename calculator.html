@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="icon" href="/static/favicon.png" type="image/x-icon">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .calculator-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .calculator-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="number"], select {
+            width: 80px;
+            padding: 10px;
+            font-size: 1em;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+    <script>
+        async function calculate() {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+            const operation = document.getElementById('operation').value;
+            const data = { num1, num2, operation };
+
+            try {
+                const response = await fetch('/cal/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                document.getElementById('result').innerText = result.error 
+                    ? 'Error: ' + result.error 
+                    : 'Result: ' + result.result;
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Simple Calculator</h1>
+        <div class="calculator-row">
+            <input type="number" id="num1" placeholder="Number 1" required>
+            <select id="operation">
+                <option value="add">+</option>
+                <option value="sub">-</option>
+                <option value="multi">*</option>
+                <option value="divide">/</option>
+            </select>
+            <input type="number" id="num2" placeholder="Number 2" required>
+        </div>
+        <button onclick="calculate()">Calculate</button>
+        <p id="result"></p>
+    </div>
+</body>
+</html>
